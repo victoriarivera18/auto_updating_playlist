@@ -25,8 +25,12 @@ from secrets import spotify_user_id, client_id, client_secret
 
 
 def auth(): 
-    client_cred_b64 = base64.b64encode(bytes(client_id + ":" + client_secret, "ISO-8859-1")).decode("ascii")
     method = "POST"
+
+    message = f"{client_id}:{client_secret}"
+    messageBytes = message.encode('ascii')
+    base64Bytes = base64.b64encode(messageBytes)
+    base64Message = base64Bytes.decode('ascii')
 
     url = "https://accounts.spotify.com/api/token"
     
@@ -35,13 +39,14 @@ def auth():
     }
 
     headers = {
-        "Authorization" : f"Basic {client_cred_b64}",
+        "Authorization" : f"Basic {base64Message}",
         "Content-Type": "application/x-www-form-urlencoded"
     }
 
     token_response = requests.post(url, data=data, headers=headers)
     token_data = token_response.json()
-
+    print(token_response)
+    print(token_data['access_token'])
 
 
 
